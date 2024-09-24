@@ -69,7 +69,6 @@ class PostShortSerializer(serializers.ModelSerializer):
             "summary",
             "publish_date",
             "status",
-            "likes",
             "views",
             "keywords",
         ]
@@ -93,6 +92,7 @@ class PostSerializer(serializers.ModelSerializer):
                                                  queryset=User.objects.all(),
                                                  pk_field=UUIDField(format='hex'),
                                                  source='user')
+    liked_by = UserShortSerializer(many=True, read_only=True)
 
     class Meta:
         model = Post
@@ -110,7 +110,7 @@ class PostSerializer(serializers.ModelSerializer):
             "author",
             "publish_date",
             "status",
-            "likes",
+            "liked_by",
             "contents",
             "keywords",
             "views",
@@ -154,4 +154,12 @@ class PostSerializer(serializers.ModelSerializer):
             return data_res
         return super().update(instance, validated_data)
 
+class PostLikeSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = Post
+        fields = [
+            "id",
+            "title",
+            "likes"
+        ]

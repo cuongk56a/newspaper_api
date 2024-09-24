@@ -29,7 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
 class UserShortSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'full_name', 'role', 'avatar']
+        fields = ['id', 'full_name', 'avatar']
 
 
 class UserShortWithEmailSerializer(UserShortSerializer):

@@ -1,7 +1,7 @@
 from django.utils import timezone
 from django.db.models import Q, Count, Avg
 from django.utils.text import slugify
-from django.db.models.functions import Lower
+from django.db.models.functions import Lower, Upper
 from base.service import BaseService
 from .constants import PostStatus
 from .models import Post, Contents, Keyword, PostVector, Source, Category
@@ -32,11 +32,11 @@ class KeywordService(BaseService):
     def create_list_keyword(cls, data, news_objs):
         keyword_data = []
         for _idx, news in enumerate(data):
-            keywords = news.get("keyword")
+            keywords = news.get("keyword",[]) 
             for keyword in keywords:
                 item = {"post": news_objs[_idx], "keyword": keyword}
                 keyword_data.append(item)
-        keyword_objs = (Keyword(**keyword) for keyword in keyword_data)
+        keyword_objs = [Keyword(**keyword) for keyword in keyword_data]
         return keyword_objs
 
     @classmethod
@@ -73,28 +73,35 @@ class PostService(BaseService):
         return post_obj
     
     @classmethod
-    def create_list_posts(cls, arr_posts, topic):
-        category = Category.objects
+    def create_list_posts(cls, arr_posts):
+        # category = Category.objects
         in_db_sources = Source.objects.values_list("domain", flat=True)
         source_crawl = list(
             filter(lambda x: x.get("source") not in in_db_sources, arr_posts)
         )
         objs = []
         sources = []
+        categories_to_create = []
         if source_crawl:
             for index, post in enumerate(source_crawl):
+                categoryPost = post.get("category").upper()
+                category, created = Category.objects.get_or_create(title=categoryPost)
+                if created:
+                    categories_to_create.append(category)
                 source = Source(title=post.get("title"), domain=post.get("source"))
                 sources.append(source)
                 objs.append(Post(
                     title=post.get("title"),
                     thumbnail=post.get("thumbnail"),
-                    category=category.filter(title=topic[index]).first(),
+                    category=category,
                     slug=slugify(post.get('title')[:30]),
                     source=source,
                     summary=post.get("excerpt"),
                     status='PUBLISHED',
-                    publish_date=timezone.now
+                    publish_date=timezone.now()
                 ))
+            if categories_to_create:
+                Category.objects.bulk_create(categories_to_create, ignore_conflicts=True)
         return source_crawl, objs, sources
   
     @classmethod
@@ -107,11 +114,19 @@ class PostService(BaseService):
         if params.get('search'):
             search_string = params.get('search')
             ft &= (Q(category__title__icontains=search_string) | Q(
-                title_lower__contains=str(search_string).strip().lower()))
+                title_lower__contains=str(search_string).strip().lower()) | Q(keywords__keyword__icontains=search_string))
         if params.get('start_date') and params.get('end_date'):
             ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
-        posts = Post.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related(
+        posts = Post.objects.annotate(title_lower=Lower('title')).filter(ft).distinct().prefetch_related(
                 'category', 'user', 'source','keywords').order_by('-publish_date')
+        return posts
+    
+    @classmethod
+    def get_list_post_sort_like(cls, params=None):
+        ft = Q(status=PostStatus.PUBLISHED.value)
+        ft &= Q(user__isnull=True)
+        posts = Post.objects.distinct().prefetch_related(
+                'category', 'user', 'source','keywords').order_by('-likes')
         return posts
   
     @classmethod

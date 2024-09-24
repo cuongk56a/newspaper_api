@@ -8,7 +8,8 @@ from bs4.element import Tag
 from api_post.models import Keyword, Post, Contents, Source
 from api_post.service import PostService, ContentService, KeywordService
 from .utils import Util, Data_Process
-from keras import models
+# from keras import models
+# from keras.layers import TFSMLayer
 import pickle
 import core
 import os
@@ -23,13 +24,12 @@ def remove_space(string):
     return string
 
 
-model_file = r"D:\web_read_newspaper\newspaper_api\api_post\serivces\AI\models\model_test1"
-encoder_file = r"D:\web_read_newspaper\newspaper_api\api_post\serivces\AI\encoder.pkl"
-model = models.load_model(model_file)
-# model.save(r"D:\web_read_newspaper\newspaper_api\api_post\serivces\AI\models\model_test1.h5")
+# model_file = r"D:\web_read_newspaper\newspaper_api\api_post\serivces\AI\models\model_test1"
+# encoder_file = r"D:\web_read_newspaper\newspaper_api\api_post\serivces\AI\encoder.pkl"
+# model = models.load_(model_file, call_endpoint='serving_default')
 
-with open(encoder_file, 'rb') as f:
-    encoder = pickle.load(f)
+# with open(encoder_file, 'rb') as f:
+#     encoder = pickle.load(f)
 
 
 class CrawlService(BaseService):
@@ -50,6 +50,7 @@ class CrawlService(BaseService):
                 soup_detail = BeautifulSoup(page_detail.content, "html.parser")
                 news = {
                     "source": link,
+                    "category": remove_space(soup_detail.select('a[data-content-piece*="article-breadcrumb-position_1"]')[0].text),
                     "title":
                         remove_space(soup_detail.select('[class*="title-page"]')[0].text)
                     ,
@@ -152,6 +153,7 @@ class CrawlService(BaseService):
                     "title":
                         remove_space(soup_detail.select('[class*="content-detail-title"]')[0].text)
                     ,
+                    "category": remove_space(soup_detail.select('ul[class*="bread-crumb-detail sm-show-time"] a')[1].text),
                     "excerpt": remove_space(soup_detail.select('[class*="content-detail-sapo"]')[0].text),
                     "thumbnail": thumbnails[idx].get("data-srcset") or thumbnails[idx].get("src"),
                     "content": [],
@@ -233,16 +235,16 @@ class CrawlService(BaseService):
 
     @classmethod
     def craw_and_save_data_in_db(cls, data):
-        try:
-            data_class = Data_Process(data)
-            input_data = data_class.convert_data()
-        except Exception as e:
-            print("Exception: " + e)
-        scores = model.predict(input_data).argmax(axis=-1)
-        category = encoder.inverse_transform(scores)
+        # try:
+        #     data_class = Data_Process(data)
+        #     input_data = data_class.convert_data()
+        # except Exception as e:
+        #     print("Exception: " + e)
+        # scores = model.predict(input_data).argmax(axis=-1)
+        # category = encoder.inverse_transform(scores)
         try:
             with transaction.atomic():
-                data, news_data, source = PostService.create_list_posts(data, category)
+                data, news_data, source = PostService.create_list_posts(data)
                 Source.objects.bulk_create(
                     source, ignore_conflicts=True
                 )
