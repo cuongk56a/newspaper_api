@@ -26,10 +26,12 @@ def remove_space(string):
 
 # model_file = r"D:\web_read_newspaper\newspaper_api\api_post\serivces\AI\models\model_test1"
 # encoder_file = r"D:\web_read_newspaper\newspaper_api\api_post\serivces\AI\encoder.pkl"
+model_file = os.path.join(core.settings.BASE_DIR, './api_post/serivces/AI/models/model_test1')
+encoder_file = os.path.join(core.settings.BASE_DIR, './api_post/serivces/AI/encoder.pkl')
 # model = models.load_(model_file, call_endpoint='serving_default')
 
-# with open(encoder_file, 'rb') as f:
-#     encoder = pickle.load(f)
+with open(encoder_file, 'rb') as f:
+    encoder = pickle.load(f)
 
 
 class CrawlService(BaseService):
