@@ -15,13 +15,13 @@ import core
 uniChars = "àáảãạâầấẩẫậăằắẳẵặèéẻẽẹêềếểễệđìíỉĩịòóỏõọôồốổỗộơờớởỡợùúủũụưừứửữựỳýỷỹỵÀÁẢÃẠÂẦẤẨẪẬĂẰẮẲẴẶÈÉẺẼẸÊỀẾỂỄỆĐÌÍỈĨỊÒÓỎÕỌÔỒỐỔỖỘƠỜỚỞỠỢÙÚỦŨỤƯỪỨỬỮỰỲÝỶỸỴÂĂĐÔƠƯ"
 unsignChars = "aaaaaaaaaaaaaaaaaeeeeeeeeeeediiiiiooooooooooooooooouuuuuuuuuuuyyyyyAAAAAAAAAAAAAAAAAEEEEEEEEEEEDIIIOOOOOOOOOOOOOOOOOOOUUUUUUUUUUUYYYYYAADOOU"
 
-tfidf_vec_file = r"D:\web_read_newspaper\newspaper_api\api_post\serivces\AI\tfidf_vect.pkl"
-svd_file = r"D:\web_read_newspaper\newspaper_api\api_post\serivces\AI\svd.pkl"
+# tfidf_vec_file = r"D:\web_read_newspaper\newspaper_api\api_post\serivces\AI\tfidf_vect.pkl"
+# svd_file = r"D:\web_read_newspaper\newspaper_api\api_post\serivces\AI\svd.pkl"
 
-with open(tfidf_vec_file, 'rb') as f:
-    tfidf_vect_test = pickle.load(f)
-with open(svd_file, 'rb') as f:
-    svd = pickle.load(f)
+# with open(tfidf_vec_file, 'rb') as f:
+#     tfidf_vect_test = pickle.load(f)
+# with open(svd_file, 'rb') as f:
+#     svd = pickle.load(f)
 
 
 class EmailThread(threading.Thread):
@@ -82,7 +82,8 @@ class NLP(object):
         self.__set_stopwords()
 
     def __set_stopwords(self):
-        urlFile=r"D:\web_read_newspaper\newspaper_api\api_post\serivces\AI\stopwords-nlp-vi.txt"
+        # urlFile=r"D:\web_read_newspaper\newspaper_api\api_post\serivces\AI\stopwords-nlp-vi.txt"
+        urlFile=''
         file_stopword = os.path.join(urlFile)
         self.stopwords = FileReader(file_stopword).read_stopwords()
 
