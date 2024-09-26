@@ -250,6 +250,7 @@ class CrawlService(BaseService):
                 Source.objects.bulk_create(
                     source, ignore_conflicts=True
                 )
+
                 news_objs = Post.objects.bulk_create(
                     news_data, ignore_conflicts=True
                 )

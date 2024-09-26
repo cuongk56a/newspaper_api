@@ -98,7 +98,7 @@ class PostViewSet(BaseViewSet):
     def create_post(self, request, *args, **kwargs):
         bookmark1 = CrawlService.crawl_from_url_dantri()
         bookmark2 = CrawlService.crawl_from_url_vietnamnet()
-        bookmark = bookmark1 + bookmark1
+        bookmark = bookmark1 + bookmark2
         CrawlService.craw_and_save_data_in_db(bookmark)
         return Response(bookmark, status=status.HTTP_200_OK)
 
