@@ -155,7 +155,7 @@ class CrawlService(BaseService):
                     "title":
                         remove_space(soup_detail.select('[class*="content-detail-title"]')[0].text)
                     ,
-                    "category": remove_space(soup_detail.select('ul[class*="bread-crumb-detail sm-show-time"] a')[1].text),
+                    "category": remove_space(soup_detail.select('div[class*="bread-crumb-detail sm-show-time"] a')[1].text),
                     "excerpt": remove_space(soup_detail.select('[class*="content-detail-sapo"]')[0].text),
                     "thumbnail": thumbnails[idx].get("data-srcset") or thumbnails[idx].get("src"),
                     "content": [],

@@ -96,8 +96,9 @@ class PostViewSet(BaseViewSet):
     
     @action(methods=['get'], detail=False, url_path="create_post", serializer_class=PostShortSerializer)
     def create_post(self, request, *args, **kwargs):
-        bookmark = CrawlService.crawl_from_url_dantri()
-        # bookmark = CrawlService.crawl_from_url_vietnamnet()
+        bookmark1 = CrawlService.crawl_from_url_dantri()
+        bookmark2 = CrawlService.crawl_from_url_vietnamnet()
+        bookmark = bookmark1 + bookmark1
         CrawlService.craw_and_save_data_in_db(bookmark)
         return Response(bookmark, status=status.HTTP_200_OK)
 
