@@ -97,10 +97,10 @@ class PostViewSet(BaseViewSet):
     @action(methods=['get'], detail=False, url_path="create_post", serializer_class=PostShortSerializer)
     def create_post(self, request, *args, **kwargs):
         bookmark1 = CrawlService.crawl_from_url_dantri()
-        bookmark2 = CrawlService.crawl_from_url_vietnamnet()
-        bookmark = bookmark1 + bookmark2
-        CrawlService.craw_and_save_data_in_db(bookmark)
-        return Response(bookmark, status=status.HTTP_200_OK)
+        # bookmark2 = CrawlService.crawl_from_url_vietnamnet()
+        # bookmark = bookmark1 + bookmark2
+        CrawlService.craw_and_save_data_in_db(bookmark1)
+        return Response(bookmark1, status=status.HTTP_200_OK)
 
     @action(methods=['get'], detail=True, url_path="like_post", serializer_class=PostSerializer, permission_class=[IsAuthenticated])
     def like_post(self, request, *args, **kwargs):
