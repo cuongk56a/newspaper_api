@@ -47,17 +47,17 @@ class CrawlService(BaseService):
         arr_news = []
         for idx, item in enumerate(cards):
             try:
-                link = url + item.find("a").get("href")
+                link = url + item.find("a").get("href")[0:255]
                 page_detail = requests.get(link)
                 soup_detail = BeautifulSoup(page_detail.content, "html.parser")
                 news = {
-                    "source": link,
-                    "category": remove_space(soup_detail.select('a[data-content-piece*="article-breadcrumb-position_1"]')[0].text),
+                    "source": link[0:255],
+                    "category": remove_space(soup_detail.select('a[data-content-piece*="article-breadcrumb-position_1"]')[0].text)[0:255],
                     "title":
-                        remove_space(soup_detail.select('[class*="title-page"]')[0].text)
+                        remove_space(soup_detail.select('[class*="title-page"]')[0].text)[0:255]
                     ,
-                    "excerpt": remove_space(soup_detail.select('[class*="singular-sapo"]')[0].text),
-                    "thumbnail": thumbnails[idx].get("src"),
+                    "excerpt": remove_space(soup_detail.select('[class*="singular-sapo"]')[0].text)[0:255],
+                    "thumbnail": thumbnails[idx].get("src")[0:255],
                     "content": [],
                     "keyword": list(
                         map(
@@ -92,9 +92,9 @@ class CrawlService(BaseService):
                                 "image": "",
                                 "order": i,
                             }
-                        item["title"] = remove_space(child.find("strong").text)
+                        item["title"] = remove_space(child.find("strong").text)[0:255]
                         if child.name == "p":
-                            paragraph["text"] = remove_space(child.text)
+                            paragraph["text"] = remove_space(child.text)[0:255]
                             paragraph["below_img"] = below_img
                             item["paragraph"].append(paragraph)
                     elif isinstance(child, Tag) and child.name == "p":
@@ -108,7 +108,7 @@ class CrawlService(BaseService):
                                 "image": "",
                                 "order": i,
                             }
-                        paragraph["text"] = remove_space(child.text)
+                        paragraph["text"] = remove_space(child.text)[0:255]
                         paragraph["below_img"] = below_img
                         item["paragraph"].append(paragraph)
                     elif isinstance(child, Tag) and child.name == "figure":
@@ -151,13 +151,13 @@ class CrawlService(BaseService):
                 page_detail = requests.get(link)
                 soup_detail = BeautifulSoup(page_detail.content, "html.parser")
                 news = {
-                    "source": link,
+                    "source": link[0:255],
                     "title":
-                        remove_space(soup_detail.select('[class*="content-detail-title"]')[0].text)
+                        remove_space(soup_detail.select('[class*="content-detail-title"]')[0].text)[0:255]
                     ,
-                    "category": remove_space(soup_detail.select('div[class*="bread-crumb-detail sm-show-time"] a')[1].text),
-                    "excerpt": remove_space(soup_detail.select('[class*="content-detail-sapo"]')[0].text),
-                    "thumbnail": thumbnails[idx].get("data-srcset") or thumbnails[idx].get("src"),
+                    "category": remove_space(soup_detail.select('div[class*="bread-crumb-detail sm-show-time"] a')[1].text)[0:255],
+                    "excerpt": remove_space(soup_detail.select('[class*="content-detail-sapo"]')[0].text)[0:255],
+                    "thumbnail": thumbnails[idx].get("data-srcset") or thumbnails[idx].get("src")[0:255],
                     "content": [],
                     "keyword": list(
                         map(
@@ -194,7 +194,7 @@ class CrawlService(BaseService):
                             }
                         item["title"] = remove_space(child.find("strong").text)
                         if child.name == "p":
-                            paragraph["text"] = remove_space(child.text)
+                            paragraph["text"] = remove_space(child.text)[0:255]
                             paragraph["below_img"] = below_img
                             item["paragraph"].append(paragraph)
                     elif isinstance(child, Tag) and child.name == "p":
@@ -208,7 +208,7 @@ class CrawlService(BaseService):
                                 "image": "",
                                 "order": i,
                             }
-                        paragraph["text"] = remove_space(child.text)
+                        paragraph["text"] = remove_space(child.text)[0:255]
                         paragraph["below_img"] = below_img
                         item["paragraph"].append(paragraph)
                     elif isinstance(child, Tag) and child.name == "figure":

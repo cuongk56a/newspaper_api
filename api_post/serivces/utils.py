@@ -18,7 +18,6 @@ unsignChars = "aaaaaaaaaaaaaaaaaeeeeeeeeeeediiiiiooooooooooooooooouuuuuuuuuuuyyy
 # tfidf_vec_file = r"D:\web_read_newspaper\newspaper_api\api_post\serivces\AI\tfidf_vect.pkl"
 # svd_file = r"D:\web_read_newspaper\newspaper_api\api_post\serivces\AI\svd.pkl"
 tfidf_vec_file = os.path.join(core.settings.BASE_DIR, './api_post/serivces/AI/tfidf_vect.pkl')
-print(tfidf_vec_file)
 svd_file = os.path.join(core.settings.BASE_DIR, './api_post/serivces/AI/svd.pkl')
 
 with open(tfidf_vec_file, 'rb') as f:
